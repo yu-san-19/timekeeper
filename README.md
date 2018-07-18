@@ -1,3 +1,5 @@
+*Forked form [maruta/timekeeper](https://github.com/maruta/timekeeper)*
+
 # Time Keeper
 HTML5 and JavaScript based timer with notification chime for academic conference.
 
