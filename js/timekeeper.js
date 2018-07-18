@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014-2016 Ichiro Maruta
@@ -22,11 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+
+var audio_chime1,audio_chime2,audio_chime3,audio_chime_dora;
+audio_chime1 = new Audio("./wav/chime1.wav");
+audio_chime2 = new Audio("./wav/chime2.wav");
+audio_chime3 = new Audio("./wav/chime3.wav");
+audio_chime_dora = new Audio("./wav/chime_dora.wav")
+
 $(function(){
 	var loadedcss = '';
-	$('#time1').val('15:00');
-	$('#time2').val('20:00');
-	$('#time3').val('25:00');
+	$('#time1').val('0:00');
+	$('#time2').val('0:00');
+	$('#time3').val('0:00');
+	$('#dora_time').val('0:00');
 	$('#info').html("Click to edit this message.");
 	function getHashParams() {
     var hashParams = {};
@@ -48,6 +56,7 @@ $(function(){
     if(params.t1 !== undefined) $('#time1').val(params.t1);
 		if(params.t2 !== undefined) $('#time2').val(params.t2);
 		if(params.t3 !== undefined) $('#time3').val(params.t3);
+		if(params.dt !== undefined) $('#dora_time').val(params.dt);
 		if(params.m !== undefined) $('#info').html(params.m);
 		if(loadedcss !== ''){
 			location.reload();
@@ -64,6 +73,7 @@ $(function(){
     var hashstr = '#t1=' + $('#time1').val()
 		+ '&t2=' + $('#time2').val()
 		+ '&t3=' + $('#time3').val()
+		+ '&dt=' + $('#dora_time').val()
 		+ '&m=' + encodeURIComponent($('#info').html());
 		if(loadedcss !== 'default'){
 			hashstr = hashstr + '&th=' + encodeURIComponent(loadedcss);
@@ -95,10 +105,6 @@ $(function(){
 	    }
 	});
 
-	var audio_chime1,audio_chime2,audio_chime3;
-	audio_chime1 = new Audio("./wav/chime1.wav");
-	audio_chime2 = new Audio("./wav/chime2.wav");
-	audio_chime3 = new Audio("./wav/chime3.wav");
 
 	function changeStateClass(s) {
 		$('body').removeClass(function(index, className) {
@@ -182,6 +188,13 @@ $(function(){
 		audio_chime1.play();
 	});
 
+	$('#playdora').click(function (event){
+		event.preventDefault();
+		audio_chime_dora.load();
+		audio_chime_dora.currentTime = 0;
+		audio_chime_dora.play();
+	});
+
 	function show_time(){
 		var time_str= ('00' +  time_inner.getMinutes()   ).slice(-2) + ':'
 					+ ('00' +  time_inner.getSeconds() ).slice(-2);
@@ -206,6 +219,8 @@ $(function(){
 					var time1 = new Date(start_time.getTime()+((new Date('2011/1/1 00:'+$('#time1').val()))-(new Date('2011/1/1 00:00:00'))));
 					var time2 = new Date(start_time.getTime()+((new Date('2011/1/1 00:'+$('#time2').val()))-(new Date('2011/1/1 00:00:00'))));
 					var time3 = new Date(start_time.getTime()+((new Date('2011/1/1 00:'+$('#time3').val()))-(new Date('2011/1/1 00:00:00'))));
+					var dora_time = new Date(start_time.getTime()+((new Date('2011/1/1 00:'+$('#dora_time').val()))
+													- (new Date('2011/1/1 00:00:00'))));
 
 					if((last_time < time1 && time1 <= cur_time) || (last_time==time1 && cur_time==time1)){
 						changePhaseClass('1');
@@ -223,6 +238,11 @@ $(function(){
 						changePhaseClass('3');
 						audio_chime3.currentTime = 0;
 						audio_chime3.play();
+					}
+					if((last_time < dora_time && dora_time <= cur_time) || (last_time==dora_time && cur_time==dora_time)){
+						changePhaseClass('4');
+						audio_chime_dora.currentTime = 0;
+						audio_chime_dora.play();
 					}
 
 				}
